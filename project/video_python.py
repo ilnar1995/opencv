@@ -21,20 +21,6 @@ def zoom_frames(src, dim, k=1):  # получить картинку для от
     return output
 
 
-# def zoom_in_zoom_out(frame, zoom, effectName, dim, frame_time, fps, i):
-#     centre_width = frame.shape[1] / 2
-#     centre_height = frame.shape[0] / 2
-#     withdif = centre_width - (dim[0] / 2)
-#     heightdif = centre_height - (dim[1] / 2)
-#     k = i / frame_time * 1000 / 24
-#     x1 = int(centre_width - (zoom * dim[0] / 2) + k*withdif)
-#     x2 = int(centre_width + (zoom * dim[0] / 2) - k*withdif)
-#     y1 = int(centre_height - (zoom * dim[1] / 2) + k*withdif*dim[1]/dim[0])
-#     y2 = int(centre_height + (zoom * dim[1] / 2) - k*withdif*dim[1]/dim[0])
-#     print("(x1", x1, "y1", y1, ")(x2", x2, "y2", y2, "                    k", k)
-#     return {"y1": y1, "y2": y2, "x1": x1, "x2": x2}
-
-
 def zoom_in_zoom_out(frame, zoom, effectName, dim, frame_time, fps, i):
     centre_width = frame.shape[1] / 2
     centre_height = frame.shape[0] / 2
@@ -47,10 +33,15 @@ def zoom_in_zoom_out(frame, zoom, effectName, dim, frame_time, fps, i):
     else:
         a = k * heightdif * dim[0] / dim[1]
         b = k * heightdif
-    x1 = int(centre_width - (zoom * dim[0] / 2) + a)
-    x2 = int(centre_width + (zoom * dim[0] / 2) - a)
-    y1 = int(centre_height - (zoom * dim[1] / 2) + b)
-    y2 = int(centre_height + (zoom * dim[1] / 2) - b)
+    if effectName == "zoomIn":
+        c = 1
+    else:
+        c = -1
+        zoom = 1
+    x1 = int(centre_width - (zoom * dim[0] / 2) + a * c)
+    x2 = int(centre_width + (zoom * dim[0] / 2) - a * c)
+    y1 = int(centre_height - (zoom * dim[1] / 2) + b * c)
+    y2 = int(centre_height + (zoom * dim[1] / 2) - b * c)
     #print("(x1", x1, "y1", y1, ")(x2", x2, "y2", y2, "                    k", k)
     return {"y1": y1, "y2": y2, "x1": x1, "x2": x2}
 
@@ -59,8 +50,8 @@ def zoom_in_zoom_out(frame, zoom, effectName, dim, frame_time, fps, i):
 fps = 24
 dim = (1366, 720)
 k1 = {'1x': 1.20, '2x': 1.25, '3x': 1.30, '4x': 1.35, '5x': 1.40, '6x': 1.45, '7x': 1.50}
-frame_time = 120000
-effectName = "zoomIn"
+frame_time = 10000
+effectName = "zoomOut"
 # effectName = (
 #     ("zoomIn", "zoomIn"),
 #     ("zoomOut", "zoomOut"),
@@ -95,46 +86,4 @@ out.release()
 # cv.destroyAllWindows()
 
 
-# import numpy as np
-# import cv2 as cv
-# cap = cv.VideoCapture(0)
-# # Define the codec and create VideoWriter object
-# fourcc = cv.VideoWriter_fourcc(*'XVID')
-# out = cv.VideoWriter('output.avi', fourcc, 20.0, (640,  480))
-# while cap.isOpened():
-#     ret, frame = cap.read()
-#     if not ret:
-#         print("Can't receive frame (stream end?). Exiting ...")
-#         break
-#     frame = cv.flip(frame, 0)
-#     # write the flipped frame
-#     out.write(frame)
-#     cv.imshow('frame', frame)
-#     if cv.waitKey(1) == ord('q'):
-#         break
-# # Release everything if job is finished
-# cap.release()
-# out.release()
-# cv.destroyAllWindows()
 
-
-import numpy as np
-import cv2 as cv
-
-# Define the codec and create VideoWriter object
-fps = 24
-dim = (200, 200)
-# fourcc = cv.VideoWriter_fourcc(*"mp4v")
-out = cv.VideoWriter('output.avi', cv.VideoWriter_fourcc(*"mp4v"), fps, dim)
-
-duration = 20
-i = duration * fps
-seconds_left = 0
-frame = cv.imread('image1.jpg')
-while seconds_left < i:
-    # write the flipped frame
-    out.write(frame)
-    seconds_left += 1
-# Release everything if job is finished
-out.release()
-# cv.destroyAllWindows()
