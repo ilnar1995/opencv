@@ -49,9 +49,10 @@ def zoom_in_zoom_out(frame, zoom, effectName, dim, frame_time, fps, i):
 # Define the codec and create VideoWriter object
 fps = 24
 dim = (1366, 720)
-k1 = {'1x': 1.20, '2x': 1.25, '3x': 1.30, '4x': 1.35, '5x': 1.40, '6x': 1.45, '7x': 1.50}
+k1 = {'10': 1.20, '20': 1.2, '30': 1.30, '40': 1.4, '50': 1.5, '60': 1.6, '70': 1.7, '80': 1.8, '90': 1.9, '100': 2.0}
+k=k1.get('100')
 frame_time = 10000
-effectName = "zoomOut"
+effectName = "zoomIn"
 # effectName = (
 #     ("zoomIn", "zoomIn"),
 #     ("zoomOut", "zoomOut"),
@@ -64,14 +65,14 @@ out = cv2.VideoWriter('output1.avi', cv2.VideoWriter_fourcc(*"mp4v"), fps, dim)
 
 quantity_frame: int = int(fps * frame_time // 1000)
 frame = cv2.imread('image.jpg')
-frame = zoom_frames(frame, dim, k1.get('7x'))  # k1.get('5x'))
+frame = zoom_frames(frame, dim, k)  # k1.get('5x'))
 print("количество кадров", quantity_frame)
 start_time = time.time()
 # resized = cv2.resize(frame, dim, interpolation=cv2.INTER_LINEAR)
 if effectName == "zoomIn" or effectName == "zoomOut":
     pass
     for i in range(quantity_frame):
-        coordinates = zoom_in_zoom_out(frame, k1.get('7x'), effectName, dim, frame_time, fps, i)
+        coordinates = zoom_in_zoom_out(frame, k, effectName, dim, frame_time, fps, i)
         frame1_resized = frame[coordinates.get("y1"):coordinates.get("y2"), coordinates.get("x1"):coordinates.get("x2")]
         resized = cv2.resize(frame1_resized, dim, interpolation=cv2.INTER_LINEAR)
         out.write(resized)
