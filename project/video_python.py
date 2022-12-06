@@ -26,13 +26,13 @@ def zoom_in_zoom_out(frame, zoom, effectName, dim, frame_time, fps, i):
     centre_height = frame.shape[0] / 2
     withdif = centre_width - (dim[0] / 2)
     heightdif = centre_height - (dim[1] / 2)
-    k = i / frame_time * 1000 / 24
-    if frame.shape[1] / dim[0] <= frame.shape[0] / dim[1]:
-        a = k*withdif
-        b = k*withdif*dim[1]/dim[0]
-    else:
+    k = i / frame_time * 1000 / fps
+    if dim[0] > frame.shape[0] / dim[1]:
         a = k * heightdif * dim[0] / dim[1]
         b = k * heightdif
+    else:
+        a = k*withdif
+        b = k*withdif*dim[1]/dim[0]
     if effectName == "zoomIn":
         c = 1
     else:
@@ -64,7 +64,7 @@ effectName = "zoomIn"
 out = cv2.VideoWriter('output1.avi', cv2.VideoWriter_fourcc(*"mp4v"), fps, dim)
 
 quantity_frame: int = int(fps * frame_time // 1000)
-frame = cv2.imread('image.jpg')
+frame = cv2.imread('Stones.jpg')
 frame = zoom_frames(frame, dim, k)  # k1.get('5x'))
 print("количество кадров", quantity_frame)
 start_time = time.time()
