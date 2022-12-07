@@ -49,6 +49,7 @@ def zoom_in_zoom_out(frame, zoom, effectName, dim, frame_time, fps, i):
 
 
 
+
 # Define the codec and create VideoWriter object
 fps = 24
 dim = (1366, 720)
