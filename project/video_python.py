@@ -35,32 +35,7 @@ def zoom_in_zoom_out(frame, zoom, effectName, dim, frame_time, fps, i):
         b = k*withdif*dim[1]/dim[0]
     if effectName == "zoomIn":
         c = 1
-    else:
-    #elif effectName == "zoomOut":
-        c = -1
-        zoom = 1
-    x1 = int(centre_width - (zoom * dim[0] / 2) + a * c)
-    x2 = int(centre_width + (zoom * dim[0] / 2) - a * c)
-    y1 = int(centre_height - (zoom * dim[1] / 2) + b * c)
-    y2 = int(centre_height + (zoom * dim[1] / 2) - b * c)
-    print("(x1", x1, "y1", y1, ")(x2", x2, "y2", y2, "                    k", k)
-    return cv2.resize(frame[y1:y2, x1:x2], dim, interpolation=cv2.INTER_LINEAR)
-
-def move_zoom_frame(frame, zoom, effectName, dim, frame_time, fps, i):
-    centre_width = frame.shape[1] / 2
-    centre_height = frame.shape[0] / 2
-    withdif = centre_width - (dim[0] / 2)
-    heightdif = centre_height - (dim[1] / 2)
-    k = i / frame_time * 1000 / fps
-    if frame.shape[1] / dim[0] > frame.shape[0] / dim[1]:
-        a = k * heightdif * dim[0] / dim[1]
-        b = k * heightdif
-    else:
-        a = k*withdif
-        b = k*withdif*dim[1]/dim[0]
-    if effectName == "zoomIn":
-        c = 1
-    else:
+    elif effectName == "zoomOut":
         c = -1
         zoom = 1
     x1 = int(centre_width - (zoom * dim[0] / 2) + a * c)
@@ -68,6 +43,32 @@ def move_zoom_frame(frame, zoom, effectName, dim, frame_time, fps, i):
     y1 = int(centre_height - (zoom * dim[1] / 2) + b * c)
     y2 = int(centre_height + (zoom * dim[1] / 2) - b * c)
     #print("(x1", x1, "y1", y1, ")(x2", x2, "y2", y2, "                    k", k)
+    return cv2.resize(frame[y1:y2, x1:x2], dim, interpolation=cv2.INTER_LINEAR)
+
+def move_zoom_frame(frame, zoom, effectName, dim, frame_time, fps, i):
+    k = i / frame_time * 1000 / fps
+    withdif = frame.shape[1] - dim[0]
+    heightdif = frame.shape[0] - dim[1]
+    if effectName == "moveTop" or effectName == "moveBottom":
+        a = k * heightdif
+        centre_width = frame.shape[1] / 2
+        b = dim[0] / 2
+        x1 = int(centre_width - b)
+        x2 = int(centre_width + b)
+        if effectName == "moveTop":
+            y1 = int(heightdif-a)
+            y2 = int(frame.shape[0]-a)
+        else:
+            y1 = int(a)
+            y2 = int(frame.shape[0]-heightdif+a)
+    if effectName == "moveLeft" or effectName == "moveRight":
+        a = k * withdif
+        centre_height = frame.shape[0] / 2
+        if effectName == "moveLeft":
+            centre_height = frame.shape[0] / 2
+        else:
+            centre_height = frame.shape[0] / 2
+    print("(x1", x1, "y1", y1, ")(x2", x2, "y2", y2, "                    k", k)
     return cv2.resize(frame[y1:y2, x1:x2], dim, interpolation=cv2.INTER_LINEAR)
 
 
@@ -80,7 +81,7 @@ dim = (1366, 720)
 k1 = {'10': 1.20, '20': 1.2, '30': 1.30, '40': 1.4, '50': 1.5, '60': 1.6, '70': 1.7, '80': 1.8, '90': 1.9, '100': 2.0}
 k=k1.get('100')
 frame_time = 20000
-effectName = "zoomOut"
+effectName = "moveBottom"
 # effectName = (
 #     ("zoomIn", "zoomIn"),
 #     ("zoomOut", "zoomOut"),
@@ -92,7 +93,7 @@ effectName = "zoomOut"
 out = cv2.VideoWriter('output1.avi', cv2.VideoWriter_fourcc(*"mp4v"), fps, dim)
 
 quantity_frame: int = int(fps * frame_time // 1000)
-frame = cv2.imread('resize_image.jpg')
+frame = cv2.imread('Stones.jpg')
 frame = zoom_frames(frame, dim, k)  # k1.get('5x'))
 print("количество кадров", quantity_frame)
 start_time = time.time()
