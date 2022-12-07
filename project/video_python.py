@@ -64,11 +64,16 @@ def move_zoom_frame(frame, zoom, effectName, dim, frame_time, fps, i):
     if effectName == "moveLeft" or effectName == "moveRight":
         a = k * withdif
         centre_height = frame.shape[0] / 2
+        b = dim[1] / 2
+        y1 = int(centre_height - b)
+        y2 = int(centre_height + b)
         if effectName == "moveLeft":
-            centre_height = frame.shape[0] / 2
+            x1 = int(withdif-a)
+            x2 = int(frame.shape[1]-a)
         else:
-            centre_height = frame.shape[0] / 2
-    print("(x1", x1, "y1", y1, ")(x2", x2, "y2", y2, "                    k", k)
+            x1 = int(a)
+            x2 = int(frame.shape[1]-withdif+a)
+    #print("(x1", x1, "y1", y1, ")(x2", x2, "y2", y2, "                    k", k)
     return cv2.resize(frame[y1:y2, x1:x2], dim, interpolation=cv2.INTER_LINEAR)
 
 
@@ -80,8 +85,8 @@ fps = 24
 dim = (1366, 720)
 k1 = {'10': 1.20, '20': 1.2, '30': 1.30, '40': 1.4, '50': 1.5, '60': 1.6, '70': 1.7, '80': 1.8, '90': 1.9, '100': 2.0}
 k=k1.get('100')
-frame_time = 20000
-effectName = "moveBottom"
+frame_time = 3000
+effectName = "moveLeft"
 # effectName = (
 #     ("zoomIn", "zoomIn"),
 #     ("zoomOut", "zoomOut"),
