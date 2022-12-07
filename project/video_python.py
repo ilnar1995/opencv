@@ -43,7 +43,10 @@ def zoom_in_zoom_out(frame, zoom, effectName, dim, frame_time, fps, i):
     y1 = int(centre_height - (zoom * dim[1] / 2) + b * c)
     y2 = int(centre_height + (zoom * dim[1] / 2) - b * c)
     #print("(x1", x1, "y1", y1, ")(x2", x2, "y2", y2, "                    k", k)
-    return {"y1": y1, "y2": y2, "x1": x1, "x2": x2}
+    return cv2.resize(frame[y1:y2, x1:x2], dim, interpolation=cv2.INTER_LINEAR)
+
+
+
 
 
 # Define the codec and create VideoWriter object
@@ -51,7 +54,7 @@ fps = 24
 dim = (1366, 720)
 k1 = {'10': 1.20, '20': 1.2, '30': 1.30, '40': 1.4, '50': 1.5, '60': 1.6, '70': 1.7, '80': 1.8, '90': 1.9, '100': 2.0}
 k=k1.get('100')
-frame_time = 10000
+frame_time = 2000
 effectName = "zoomIn"
 # effectName = (
 #     ("zoomIn", "zoomIn"),
@@ -72,9 +75,7 @@ start_time = time.time()
 if effectName == "zoomIn" or effectName == "zoomOut":
     pass
     for i in range(quantity_frame):
-        coordinates = zoom_in_zoom_out(frame, k, effectName, dim, frame_time, fps, i)
-        frame1_resized = frame[coordinates.get("y1"):coordinates.get("y2"), coordinates.get("x1"):coordinates.get("x2")]
-        resized = cv2.resize(frame1_resized, dim, interpolation=cv2.INTER_LINEAR)
+        resized = zoom_in_zoom_out(frame, k, effectName, dim, frame_time, fps, i)            # обрезка кадра для i-го изображения
         out.write(resized)
 elif effectName == "moveTop" or effectName == "moveLeft" or effectName == "moveRight" or effectName == "moveBottom":
     pass
